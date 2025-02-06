@@ -7,7 +7,7 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
     <style>
-        body {
+         /* body {
             margin: 0;
             padding: 0;
         }
@@ -26,7 +26,40 @@
 
         #map {
             flex-grow: 1;
+        } */
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
         }
+
+        #container {
+            position: relative;
+            height: 100%;
+        }
+
+        #side-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 500px;
+            height: 100%;
+            background-color: white;
+            overflow-y: scroll;
+            z-index: 1;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0; 
+            height: auto;
+        }
+
 
         button {
             margin-bottom: 10px;
@@ -59,13 +92,16 @@
     </style>
  </head>
  <body>
+    
     <main id="container">
-        <div id="map"></div>
+        
+        
+        
         <div id="side-panel">
  
             <h2>Washington Public EV Charging Stations</h2>
             <button>Sort by Network</button>
- 
+            
             <table>
                 <tr>
                     <th>id</th>
@@ -74,9 +110,9 @@
                     <th>Address</th>
                 </tr>
             </table>
- 
+            
         </div>
-        
+        <div id="map"></div>
     </main>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
@@ -89,7 +125,7 @@
         });
         async function geojsonFetch() { 
             let response, public_ev, washington, table;
-            response = await fetch('assets/Public_EV_Charging_Stations.geojson');
+            response = await fetch('assets/test.geojson');
             public_ev = await response.json();
             response = await fetch('assets/washington.geojson');
             washington = await response.json();
@@ -144,14 +180,14 @@
 
             });
         };
-
         geojsonFetch();
+        
         let btn = document.getElementsByTagName("button")[0];
 
         btn.addEventListener('click', sortTable);
-
         // define the function to sort table
         function sortTable(e) {
+            geojsonFetch();
             let table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementsByTagName("table")[0];
             switching = true;
@@ -168,10 +204,10 @@
                     shouldSwitch = false;
                     /*Get the two elements you want to compare,
                     one from current row and one from the next:*/
-                    x = parseFloat(rows[i].getElementsByTagName("TD")[1].innerHTML);
-                    y = parseFloat(rows[i + 1].getElementsByTagName("TD")[1].innerHTML);
+                    x = rows[i].getElementsByTagName("td")[2];
+                    y = rows[i + 1].getElementsByTagName("td")[2];
                     //check if the two rows should switch place:
-                    if (x > y) {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
